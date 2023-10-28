@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 });
 
 // Bypassed api
-app.use("/api/user", userRouters)
+app.use("/api/users", userRouters)
 
 
 // Mongoose
