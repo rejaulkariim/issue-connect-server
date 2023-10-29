@@ -11,6 +11,7 @@ const userRouters = require("./routes/user.router");
 const createTopicRouter = require("./routes/topic.route");
 const addUserResponseRouter = require("./routes/topic.route");
 const addAdminResponseRouter = require("./routes/topic.route");
+const getUserTopicRouter = require("./routes/topic.route");
 
 // Variables
 const port = process.env.PORT || 5000;
@@ -39,7 +40,7 @@ app.use("/api/users", userRouters);
 // Topic response endpoint
 app.use("/api/user/topic", createTopicRouter, addUserResponseRouter);
 
-app.use("/api/admin/topic", addAdminResponseRouter)
+app.use("/api/admin/topic", addAdminResponseRouter, getUserTopicRouter)
 
 // Mongoose
 mongoose.connect(uri, { useUnifiedTopology: true }).then(() => {
