@@ -4,8 +4,13 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
-const userRouters = require("./routes/user.router")
+// User router
+const userRouters = require("./routes/user.router");
 
+// Topic router
+const createTopicRouter = require("./routes/topic.route");
+const addUserResponseRouter = require("./routes/topic.route");
+const addAdminResponseRouter = require("./routes/topic.route");
 
 // Variables
 const port = process.env.PORT || 5000;
@@ -28,9 +33,13 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Welcome to issue connect server!" });
 });
 
-// Bypassed api
-app.use("/api/users", userRouters)
+// Bypassed api endpoint
+app.use("/api/users", userRouters);
 
+// Topic response endpoint
+app.use("/api/user/topic", createTopicRouter, addUserResponseRouter);
+
+app.use("/api/admin/topic", addAdminResponseRouter)
 
 // Mongoose
 mongoose.connect(uri, { useUnifiedTopology: true }).then(() => {
