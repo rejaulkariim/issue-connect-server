@@ -12,6 +12,7 @@ const createTopicRouter = require("./routes/topic.route");
 const addUserResponseRouter = require("./routes/topic.route");
 const addAdminResponseRouter = require("./routes/topic.route");
 const getUserTopicRouter = require("./routes/topic.route");
+const getUserTopicByIdRouter = require("./routes/topic.route");
 
 // Variables
 const port = process.env.PORT || 5000;
@@ -38,7 +39,7 @@ app.get("/", (req, res) => {
 app.use("/api/users", userRouters);
 
 // Topic response endpoint
-app.use("/api/user/topic", createTopicRouter, addUserResponseRouter);
+app.use("/api/user/topic", createTopicRouter, addUserResponseRouter, getUserTopicByIdRouter);
 
 app.use("/api/admin/topic", addAdminResponseRouter, getUserTopicRouter)
 

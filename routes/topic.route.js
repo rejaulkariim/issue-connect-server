@@ -4,6 +4,7 @@ const {
   addAdminResponse,
   addUserResponse,
   getUserTopic,
+  getUserTopicById,
 } = require("../controllers/topic.controller");
 const { isAuthenticated } = require("../middlewares/auth.middleware");
 const { isAdmin } = require("../middlewares/admin.middleware");
@@ -15,7 +16,8 @@ const router = express.Router();
 router.post("/create", isAuthenticated, isUser, createTopic);
 
 // Get all topic
-router.get("/all", isAuthenticated, isAdmin, getUserTopic)
+router.get("/all", isAuthenticated, isUser, getUserTopic)
+router.get("/:id", isAuthenticated, getUserTopicById)
 
 // User response router
 router.post("/:topicId", isAuthenticated, isUser, addUserResponse);

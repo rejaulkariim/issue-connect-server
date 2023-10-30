@@ -5,8 +5,6 @@ const createTopic = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    console.log("✅🔥user:", userId);
-
     const { title, message } = req.body;
 
     if (!title || !message) {
@@ -87,9 +85,29 @@ const addAdminResponse = async (req, res) => {
   }
 };
 
+// Get all topic
 const getUserTopic = async (req, res) => {
   try {
-    const topic = await Topic.find({});
+    const userId = req.user._id;
+    const topics = await Topic.find({ user: userId }).sort({ createdAt: -1 });
+
+    res.status(200).json(topics);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get a specific topic
+const getUserTopicById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log("🔥",id)
+
+    const topic = await Topic.findById({_id: id});
+
+    if (!topic) {
+      return res.status(404).json({ error: "Topic not found" });
+    }
 
     res.status(200).json(topic);
   } catch (error) {
@@ -102,4 +120,5 @@ module.exports = {
   addUserResponse,
   addAdminResponse,
   getUserTopic,
+  getUserTopicById,
 };

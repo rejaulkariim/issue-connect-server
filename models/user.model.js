@@ -81,7 +81,7 @@ userSchema.statics.login = async function (email, password) {
   const user = await this.findOne({ email });
 
   if (!user) {
-    throw new Error("Incorrect email");
+    throw new Error("User not found or incorrect email");
   }
 
   // Comparing password
