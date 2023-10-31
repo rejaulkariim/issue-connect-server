@@ -3,6 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const http = require("http"); 
+const socketIo = require("socket.io");
 
 // User router
 const userRouters = require("./routes/user.router");
@@ -13,6 +15,8 @@ const addUserResponseRouter = require("./routes/topic.route");
 const addAdminResponseRouter = require("./routes/topic.route");
 const getUserTopicRouter = require("./routes/topic.route");
 const getUserTopicByIdRouter = require("./routes/topic.route");
+// Get all topic (Admin)
+const getAllTopicAdminRouter = require("./routes/topic.route");
 
 // Variables
 const port = process.env.PORT || 5000;
@@ -20,6 +24,24 @@ const uri = process.env.MONGO_URI;
 
 // Express app
 const app = express();
+
+// Create an HTTP server using the Express app
+const server = http.createServer(app); // Attach the app to the server
+
+// Create a Socket.IO instance attached to the server
+const io = socketIo(server,{ cors: {
+  origin: 'http://localhost:3000',
+  methods:['GET','POST']
+}});
+
+// Socket.IO connection handling
+io.on("connection", (socket) => {
+  console.log("A user is connected");
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected");
+  });
+});
 
 // Middlewares
 app.use(
@@ -41,11 +63,11 @@ app.use("/api/users", userRouters);
 // Topic response endpoint
 app.use("/api/user", createTopicRouter, addUserResponseRouter, getUserTopicByIdRouter);
 
-app.use("/api/admin/topic", addAdminResponseRouter, getUserTopicRouter)
+app.use("/api/admin", addAdminResponseRouter, getUserTopicRouter, getAllTopicAdminRouter)
 
 // Mongoose
 mongoose.connect(uri, { useUnifiedTopology: true }).then(() => {
-  app.listen(port, () => {
+  server.listen(port, () => {
     console.log(`Server running on port ${port}`);
   });
 });

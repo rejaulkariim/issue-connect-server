@@ -1,6 +1,7 @@
 const Topic = require("../models/topic.model");
+const User = require("../models/user.model")
 
-// Create topic
+// Create topic for user
 const createTopic = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -26,8 +27,6 @@ const addUserResponse = async (req, res) => {
     const { content } = req.body;
     const userId = req.user._id;
 
-    console.log("✅top", topicId);
-
     if (!content) {
       throw new Error("Response content is required");
     }
@@ -49,7 +48,6 @@ const addUserResponse = async (req, res) => {
 
     res.status(201).json(topic);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -57,7 +55,7 @@ const addUserResponse = async (req, res) => {
 // Add an admin response to a topic
 const addAdminResponse = async (req, res) => {
   try {
-    const topicId = req.params.topicId;
+    const topicId = req.params.id;
     const { content } = req.body;
     const adminId = req.user._id;
 
@@ -82,12 +80,11 @@ const addAdminResponse = async (req, res) => {
 
     res.status(201).json(topic);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: error.message });
   }
 };
 
-// Get all topic
+// Get all topic for (user)
 const getUserTopic = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -99,11 +96,22 @@ const getUserTopic = async (req, res) => {
   }
 };
 
-// Get a specific topic
+// Get all topic for (Admin)
+const getAllTopicAdmin = async (req, res) => {
+  try {
+
+    const topics = await Topic.find({}).sort({ createdAt: -1 }).populate('user');;
+
+    res.status(200).json(topics);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get a specific topic for user
 const getUserTopicById = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("🔥", id);
 
     const topic = await Topic.findById({ _id: id });
 
@@ -123,4 +131,5 @@ module.exports = {
   addAdminResponse,
   getUserTopic,
   getUserTopicById,
+  getAllTopicAdmin
 };

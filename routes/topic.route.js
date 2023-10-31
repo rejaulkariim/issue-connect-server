@@ -5,6 +5,7 @@ const {
   addUserResponse,
   getUserTopic,
   getUserTopicById,
+  getAllTopicAdmin,
 } = require("../controllers/topic.controller");
 const { isAuthenticated } = require("../middlewares/auth.middleware");
 const { isAdmin } = require("../middlewares/admin.middleware");
@@ -12,23 +13,19 @@ const { isUser } = require("../middlewares/user.middleware");
 
 const router = express.Router();
 
-// Create router
+// Create router (user)
 router.post("/topic/create", isAuthenticated, isUser, createTopic);
 
-// Get all topic
-router.get("/topic/all", isAuthenticated, isUser, getUserTopic)
-router.get("/topic/:id", isAuthenticated, getUserTopicById)
+// Get all topic (user)
+router.get("/topic/all", isAuthenticated, isUser, getUserTopic);
+router.get("/topic/:id", isAuthenticated, getUserTopicById);
 
 // User response router
 router.post("/topic/:id", isAuthenticated, isUser, addUserResponse);
 
-
+// Get all topic (admin)
+router.get("/issue/all", isAuthenticated, isAdmin, getAllTopicAdmin);
 // Admin response router
-router.post(
-  "/response/:topicId",
-  isAuthenticated,
-  isAdmin,
-  addAdminResponse
-);
+router.post("/topic/response/:id", isAuthenticated, isAdmin, addAdminResponse);
 
 module.exports = router;
