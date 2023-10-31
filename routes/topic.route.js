@@ -13,14 +13,14 @@ const { isUser } = require("../middlewares/user.middleware");
 const router = express.Router();
 
 // Create router
-router.post("/create", isAuthenticated, isUser, createTopic);
+router.post("/topic/create", isAuthenticated, isUser, createTopic);
 
 // Get all topic
-router.get("/all", isAuthenticated, isUser, getUserTopic)
-router.get("/:id", isAuthenticated, getUserTopicById)
+router.get("/topic/all", isAuthenticated, isUser, getUserTopic)
+router.get("/topic/:id", isAuthenticated, getUserTopicById)
 
 // User response router
-router.post("/:topicId", isAuthenticated, isUser, addUserResponse);
+router.post("/topic/:id", isAuthenticated, isUser, addUserResponse);
 
 
 // Admin response router

@@ -22,15 +22,17 @@ const createTopic = async (req, res) => {
 // Add a user response to a topic
 const addUserResponse = async (req, res) => {
   try {
-    const topicId = req.params.topicId;
+    const topicId = req.params.id;
     const { content } = req.body;
     const userId = req.user._id;
+
+    console.log("✅top", topicId);
 
     if (!content) {
       throw new Error("Response content is required");
     }
 
-    const topic = await Topic.findById(topicId);
+    const topic = await Topic.findById({ _id: topicId });
 
     if (!topic) {
       throw new Error("Topic not found");
@@ -101,9 +103,9 @@ const getUserTopic = async (req, res) => {
 const getUserTopicById = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log("🔥",id)
+    console.log("🔥", id);
 
-    const topic = await Topic.findById({_id: id});
+    const topic = await Topic.findById({ _id: id });
 
     if (!topic) {
       return res.status(404).json({ error: "Topic not found" });

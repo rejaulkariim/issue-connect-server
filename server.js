@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
 app.use("/api/users", userRouters);
 
 // Topic response endpoint
-app.use("/api/user/topic", createTopicRouter, addUserResponseRouter, getUserTopicByIdRouter);
+app.use("/api/user", createTopicRouter, addUserResponseRouter, getUserTopicByIdRouter);
 
 app.use("/api/admin/topic", addAdminResponseRouter, getUserTopicRouter)
 
