@@ -36,7 +36,25 @@ const io = socketIo(server,{ cors: {
 
 // Socket.IO connection handling
 io.on("connection", (socket) => {
-  console.log("A user is connected");
+  console.log("connected to socket.io");
+
+  socket.on("new-topic", (data) => {
+    
+    const notificationData = {
+      user: data.user, 
+      topic: data.topic,
+    };
+
+    io.emit("new-topic", notificationData);
+    console.log("new topic: ", notificationData);
+  });
+
+  socket.on("new-message", (data) => {
+    // Handle new message data and emit it to clients
+    io.emit("new-message", data);
+    console.log("new message: ", data);
+  });
+
 
   socket.on("disconnect", () => {
     console.log("A user disconnected");

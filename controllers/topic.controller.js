@@ -1,18 +1,18 @@
 const Topic = require("../models/topic.model");
-const User = require("../models/user.model")
+const User = require("../models/user.model");
 
 // Create topic for user
 const createTopic = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    const { title, message } = req.body;
+    const { title, subject } = req.body;
 
-    if (!title || !message) {
+    if (!title || !subject) {
       throw new Error("All filds are required");
     }
 
-    const topic = await Topic.create({ title, message, user: userId });
+    const topic = await Topic.create({ title, subject, user: userId });
     res.status(201).json(topic);
   } catch (error) {
     console.error(error);
@@ -28,27 +28,30 @@ const addUserResponse = async (req, res) => {
     const userId = req.user._id;
 
     if (!content) {
-      throw new Error("Response content is required");
+      return res.status(400).json({ error: "Response content is required" });
     }
 
-    const topic = await Topic.findById({ _id: topicId });
+    const topic = await Topic.findById(topicId);
 
     if (!topic) {
-      throw new Error("Topic not found");
+      return res.status(404).json({ error: "Topic not found" });
     }
 
-    // Add the user response to the responses array of the topic
-    topic.responses.push({
+    // Create the user response object
+    const userResponse = {
       content,
       user: userId,
       isAdminResponse: false,
-    });
+    };
+
+    // Add the user response to the responses array of the topic
+    topic.responses.push(userResponse);
 
     await topic.save();
 
     res.status(201).json(topic);
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -57,24 +60,27 @@ const addAdminResponse = async (req, res) => {
   try {
     const topicId = req.params.id;
     const { content } = req.body;
-    const adminId = req.user._id;
+    const userId = req.user._id;
 
     if (!content) {
-      throw new Error("Response content is required");
+      return res.status(400).json({ error: "Response content is required" });
     }
 
     const topic = await Topic.findById(topicId);
 
     if (!topic) {
-      throw new Error("Topic not found");
+      return res.status(404).json({ error: "Topic not found" });
     }
 
-    // Add the admin response to the responses array of the topic
-    topic.responses.push({
+    // Create the user response object
+    const userResponse = {
       content,
-      user: adminId,
+      user: userId,
       isAdminResponse: true,
-    });
+    };
+
+    // Add the user response to the responses array of the topic
+    topic.responses.push(userResponse);
 
     await topic.save();
 
@@ -99,8 +105,9 @@ const getUserTopic = async (req, res) => {
 // Get all topic for (Admin)
 const getAllTopicAdmin = async (req, res) => {
   try {
-
-    const topics = await Topic.find({}).sort({ createdAt: -1 }).populate('user');;
+    const topics = await Topic.find({})
+      .sort({ createdAt: -1 })
+      .populate("user");
 
     res.status(200).json(topics);
   } catch (error) {
@@ -113,7 +120,7 @@ const getUserTopicById = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const topic = await Topic.findById({ _id: id });
+    const topic = await Topic.findById({ _id: id }).populate("responses.user");
 
     if (!topic) {
       return res.status(404).json({ error: "Topic not found" });
@@ -131,5 +138,5 @@ module.exports = {
   addAdminResponse,
   getUserTopic,
   getUserTopicById,
-  getAllTopicAdmin
+  getAllTopicAdmin,
 };
