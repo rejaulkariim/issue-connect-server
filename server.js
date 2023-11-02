@@ -30,7 +30,7 @@ const server = http.createServer(app); // Attach the app to the server
 
 // Create a Socket.IO instance attached to the server
 const io = socketIo(server,{ cors: {
-  origin: 'http://localhost:3000',
+  origin: 'https://issue-client-server.onrender.com',
   methods:['GET','POST']
 }});
 
