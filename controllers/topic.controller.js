@@ -120,7 +120,7 @@ const getUserTopicById = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const topic = await Topic.findById({ _id: id }).populate("responses.user");
+    const topic = await Topic.findById({ _id: id }).populate("responses.user").populate("user");;
 
     if (!topic) {
       return res.status(404).json({ error: "Topic not found" });
